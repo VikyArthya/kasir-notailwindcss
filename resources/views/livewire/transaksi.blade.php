@@ -25,7 +25,7 @@
                                         <th>kode Barang</th>
                                         <th>Nama Barang</th>
                                         <th>Harga</th>
-                                        <th>Qty</th>
+                                        <th>Jumlah</th>
                                         <th>Subtotal</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -37,7 +37,8 @@
                                             <td>{{ $produk->produk->kode }}</td>
                                             <td>{{ $produk->produk->nama }}</td>
                                             <td>{{ number_format($produk->produk->harga, 2, '.', ',') }}</td>
-                                            <td>{{ $produk->jumlah }}</td>
+                                            <td><input type="number"value="{{ $produk->jumlah }}" id="input-jumlah" />
+                                            </td>
                                             <td>
                                                 {{ number_format($produk->produk->harga * $produk->jumlah, 2, '.', ',') }}
                                             </td>
@@ -94,5 +95,5 @@
         @endif
     </div>
 
-
+    <script src="{{ asset('index.js') }}"></script>
 </div>

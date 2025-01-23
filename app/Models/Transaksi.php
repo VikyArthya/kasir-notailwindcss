@@ -7,8 +7,10 @@ use App\Models\DetilTransaksi;
 
 class Transaksi extends Model
 {
-    protected $fillable = ['kode', 'total', 'status'];
+    protected $fillable = ['kode', 'total', 'status', 'produk_id', 'jumlah'];
     public function detilTransaksi(){
-        return $this->hasMany(detilTransaksi::class);
+        return $this->hasMany(DetilTransaksi::class);
     }
+
+
 }
