@@ -12,6 +12,7 @@ class Transaksi extends Component
     public $kode, $total,  $kembalian, $totalSemuaBelanja;
     public $bayar = 0;
     public $transaksiAktif;
+    public $jumlah;
 
     public function transaksiBaru(){
         $this->reset();
@@ -80,18 +81,71 @@ class Transaksi extends Component
         $this->transaksiAktif->save();
         $this->reset();
     }
-    public function render()
+
+    public function updatedJumlah($value, $key)
     {
-        if($this->transaksiAktif){
-            $semuaProduk = DetilTransaksi::where('transaksi_id', $this->transaksiAktif->id)->get();
-            $this->totalSemuaBelanja = $semuaProduk->sum (function($detil){
+    $detil = DetilTransaksi::find($key);
+    if ($detil) {
+        $produk = Produk::find($detil->produk_id);
+
+
+        if ($value > ($detil->jumlah + $produk->stok)) {
+            $this->jumlah[$key] = $detil->jumlah;
+            return;
+        }
+
+
+        $produk->stok += $detil->jumlah - $value;
+        $produk->save();
+
+        $detil->jumlah = $value;
+        $detil->save();
+
+        // Hitung ulang total
+        $this->totalSemuaBelanja = DetilTransaksi::where('transaksi_id', $this->transaksiAktif->id)
+            ->get()
+            ->sum(function ($detil) {
                 return $detil->produk->harga * $detil->jumlah;
             });
-        }else{
-            $semuaProduk = [];
-        }
-        return view('livewire.transaksi')->with([
-            'semuaProduk'=>$semuaProduk
-        ]);
     }
+    }
+    // public function render()
+    // {
+    //     if($this->transaksiAktif){
+    //         $semuaProduk = DetilTransaksi::where('transaksi_id', $this->transaksiAktif->id)->get();
+    //         $this->totalSemuaBelanja = $semuaProduk->sum (function($detil){
+    //             return $detil->produk->harga * $detil->jumlah;
+    //         });
+    //     }else{
+    //         $semuaProduk = [];
+    //     }
+    //     return view('livewire.transaksi')->with([
+    //         'semuaProduk'=>$semuaProduk
+    //     ]);
+    // }
+    public function render()
+{
+    if ($this->transaksiAktif) {
+        $semuaProduk = DetilTransaksi::where('transaksi_id', $this->transaksiAktif->id)->get();
+
+        // Isi properti jumlah
+        foreach ($semuaProduk as $produk) {
+            $this->jumlah[$produk->id] = $produk->jumlah;
+        }
+
+        $this->totalSemuaBelanja = $semuaProduk->sum(function ($detil) {
+            return $detil->produk->harga * $detil->jumlah;
+        });
+    } else {
+        $semuaProduk = [];
+    }
+
+    return view('livewire.transaksi')->with([
+        'semuaProduk' => $semuaProduk
+    ]);
+}
+
+
+
+
 }

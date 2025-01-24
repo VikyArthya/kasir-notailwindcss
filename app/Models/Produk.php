@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Produk extends Model
 {
+    protected $fillable = ['kode', 'nama', 'harga', 'stok'];
     public function detilTransaksi(){
         return $this->hasMany(Produk::class);
     }

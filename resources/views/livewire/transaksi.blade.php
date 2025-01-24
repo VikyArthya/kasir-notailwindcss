@@ -37,8 +37,8 @@
                                             <td>{{ $produk->produk->kode }}</td>
                                             <td>{{ $produk->produk->nama }}</td>
                                             <td>{{ number_format($produk->produk->harga, 2, '.', ',') }}</td>
-                                            <td><input type="number"value="{{ $produk->jumlah }}" id="input-jumlah" />
-                                            </td>
+                                            <td><input type="number" wire:model.lazy="jumlah.{{ $produk->id }}"
+                                                    class="form-control"></td>
                                             <td>
                                                 {{ number_format($produk->produk->harga * $produk->jumlah, 2, '.', ',') }}
                                             </td>

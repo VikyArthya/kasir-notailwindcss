@@ -24,8 +24,9 @@
                                             <td>{{ $transaksi->kode }}</td>
                                             <td>Rp. {{ number_format($transaksi->total, 2, '.', ',') }}</td>
                                             <td>
-                                                <button wire:click="pilihMenu({{ $transaksi->id }})">
-                                                    Show
+                                                <button wire:click="pilihMenu({{ $transaksi->id }})"
+                                                    class="btn btn-info">
+                                                    Detail
                                                 </button>
                                             </td>
                                         </tr>
