@@ -8,32 +8,36 @@ use App\Models\Transaksi;
 use Livewire\Component;
 
 class Laporan extends Component
-
 {
-
     public $pilihanMenu = 'tutup';
+    public $transaksiId;
 
-    public function pilihMenu(){
-        if($this->pilihanMenu == 'lihat'){
+    public function pilihMenu($id)
+    {
+        if ($this->pilihanMenu == 'lihat' && $this->transaksiId == $id) {
             $this->pilihanMenu = 'tutup';
-        }else{
-            $this->pilihanMenu ='lihat';
+            $this->transaksiId = null;
+        } else {
+            $this->pilihanMenu = 'lihat';
+            $this->transaksiId = $id;
         }
     }
+
     public function render()
     {
+        $semuaTransaksi = Transaksi::with('detilTransaksi')
+            ->where('status', 'selesai')
+            ->get();
 
+        $transaksiTerpilih = null;
+        if ($this->pilihanMenu == 'lihat' && $this->transaksiId) {
+            $transaksiTerpilih = Transaksi::with(['detilTransaksi.produk'])
+                ->find($this->transaksiId);
+        }
 
-        // $semuaTransaksi = Transaksi::where('status', 'selesai')->with('produk')->get();
-        // return view('livewire.laporan')->with([
-        //     'semuaTransaksi' => $semuaTransaksi
-        // ]);
-        $semuaTransaksi = Transaksi::with('detilTransaksi')->where('status', 'selesai')->get();
         return view('livewire.Laporan')->with([
-            'semuaTransaksi' => $semuaTransaksi
+            'semuaTransaksi' => $semuaTransaksi,
+            'transaksiTerpilih' => $transaksiTerpilih,
         ]);
-
     }
-
-
 }
